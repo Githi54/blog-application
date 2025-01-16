@@ -8,6 +8,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
+import { CreatePostDTO } from './dto/create-post.dto';
+import { UpdatePostDTO } from './dto/update-post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -25,16 +27,19 @@ export class PostsController {
 
   @Get('author/:authorId')
   async getPostByAuthor(@Param('authorId') authorId: string) {
-    return this.postsService.getPostByAuthor(authorId);
+    return this.postsService.getPostsByAuthor(authorId);
   }
 
   @Post('create')
-  async createPost(@Body() postData: object) {
+  async createPost(@Body() postData: CreatePostDTO) {
     return this.postsService.createPost(postData);
   }
 
   @Patch(':postId')
-  async updatePost(@Param('postId') postId: string, @Body() postData: object) {
+  async updatePost(
+    @Param('postId') postId: string,
+    @Body() postData: UpdatePostDTO,
+  ) {
     return this.postsService.updatePost(postId, postData);
   }
 
