@@ -14,6 +14,12 @@ import { UploadImageModule } from './upload-image/upload-image.module';
         connectionName: 'posts',
       },
     ),
+    MongooseModule.forRoot(
+      process.env.MONGODB_AUTHORS ?? 'mongodb://localhost/authors',
+      {
+        connectionName: 'authors',
+      },
+    ),
     UploadImageModule,
   ],
 })

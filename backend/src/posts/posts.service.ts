@@ -4,11 +4,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreatePostDTO } from './dto/create-post.dto';
 import { UpdatePostDTO } from './dto/update-post.dto';
+import { ErrorMessages } from 'src/shared/messages';
 
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
+    @InjectModel(Post.name, 'posts')
+    private readonly postModel: Model<PostDocument>,
   ) {}
 
   async getAllPosts(): Promise<Post[]> {
@@ -18,7 +20,7 @@ export class PostsService {
   async getPostById(postId: string): Promise<Post> {
     const post = await this.postModel.findById(postId).exec();
     if (!post) {
-      throw new NotFoundException(`Post not found`);
+      throw new NotFoundException(ErrorMessages.POST_NOT_FOUND);
     }
     return post;
   }
@@ -26,7 +28,7 @@ export class PostsService {
   async getPostsByAuthor(authorId: string): Promise<Post[]> {
     const posts = await this.postModel.find({ author: authorId }).exec();
     if (!posts.length) {
-      throw new NotFoundException(`Post not found`);
+      throw new NotFoundException(ErrorMessages.POST_NOT_FOUND);
     }
     return posts;
   }
@@ -41,7 +43,7 @@ export class PostsService {
       .findByIdAndUpdate(postId, newPostData, { new: true })
       .exec();
     if (!updatedPost) {
-      throw new NotFoundException(`Post not found`);
+      throw new NotFoundException(ErrorMessages.POST_NOT_FOUND);
     }
     return updatedPost;
   }
@@ -49,7 +51,7 @@ export class PostsService {
   async deletePost(postId: string): Promise<void> {
     const deletedPost = await this.postModel.findByIdAndDelete(postId).exec();
     if (!deletedPost) {
-      throw new NotFoundException(`Post not found`);
+      throw new NotFoundException(ErrorMessages.POST_NOT_FOUND);
     }
   }
 }
